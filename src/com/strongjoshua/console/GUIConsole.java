@@ -40,6 +40,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  */
 public class GUIConsole extends AbstractConsole {
 	private int keyID;
+	private boolean spaceKeyCatched;
+	private boolean tabKeyCatched;
 
 	private ConsoleDisplay display;
 	private boolean hidden = true;
@@ -143,6 +145,8 @@ public class GUIConsole extends AbstractConsole {
 		this.scrollPaneClass = scrollPaneClass;
 
 		this.keyID = keyID;
+		spaceKeyCatched = Gdx.input.isCatchKey(Keys.SPACE);
+		tabKeyCatched = Gdx.input.isCatchKey(Keys.TAB);
 		stage = new Stage();
 		display = new ConsoleDisplay(skin);
 		commandHistory = new CommandHistory();
@@ -535,6 +539,8 @@ public class GUIConsole extends AbstractConsole {
 				consoleWindow.setTouchable(Touchable.disabled);
 				stage.setKeyboardFocus(null);
 				stage.setScrollFocus(null);
+				Gdx.input.setCatchKey(Keys.SPACE, spaceKeyCatched);
+				Gdx.input.setCatchKey(Keys.TAB, tabKeyCatched);
 			} else {
 				input.setText("");
 				consoleWindow.setTouchable(Touchable.enabled);
@@ -550,12 +556,16 @@ public class GUIConsole extends AbstractConsole {
 				stage.setKeyboardFocus(input);
 				stage.setScrollFocus(scroll);
 			}
+			Gdx.input.setCatchKey(Keys.SPACE, false);
+			Gdx.input.setCatchKey(Keys.TAB, true);
 		}
 
 		void deselect () {
 			selected = false;
 			stage.setKeyboardFocus(null);
 			stage.setScrollFocus(null);
+			Gdx.input.setCatchKey(Keys.SPACE, spaceKeyCatched);
+			Gdx.input.setCatchKey(Keys.TAB, tabKeyCatched);
 		}
 
 		void openContext (Label label, float x, float y) {
